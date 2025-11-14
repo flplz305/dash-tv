@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -8,89 +8,41 @@
       margin: 0;
       padding: 0;
       height: 100%;
+      width: 100%;
+      background: #000;
       overflow: hidden;
-      background-color: #000;
     }
     iframe {
-      width: 100%;
-      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       border: none;
-    }
-    #fullscreenBtn {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      z-index: 9999;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #1a73e8;
-      color: white;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <iframe id="lookerFrame" src=""></iframe>
-
-  <button id="fullscreenBtn" onclick="openFullscreen()">Tela Cheia</button>
-
+  <iframe id="lookerFrame"></iframe>
   <script>
     const dashboards = [
       "https://lookerstudio.google.com/embed/reporting/b6b28955-f492-46c1-af56-76c2b7bd0dae/page/p_g4doowqmxd",
       "https://lookerstudio.google.com/embed/reporting/22049608-7769-4771-950c-f8e0715b3813/page/qzTwE",
       "https://lookerstudio.google.com/embed/reporting/b6b28955-f492-46c1-af56-76c2b7bd0dae/page/p_5082emfywd",
     ];
-
-    let currentIndex = 0;
-    const intervalTime = 120000; // 2 minutos
-
-    function cycleDashboards() {
-      document.getElementById("lookerFrame").src = dashboards[currentIndex];
-      currentIndex = (currentIndex + 1) % dashboards.length;
+    let index = 0;
+    const intervalTime = 120000;
+    function cycle() {
+      const frame = document.getElementById("lookerFrame");
+      frame.src = dashboards[index];
+      index = (index + 1) % dashboards.length;
     }
-
-    function openFullscreen() {
-      const elem = document.documentElement;
-      const button = document.getElementById("fullscreenBtn");
-
-      const hideButton = () => button.style.display = "none";
-
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().then(hideButton).catch(console.error);
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-        hideButton();
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-        hideButton();
-      } else {
-        alert("Modo tela cheia não suportado neste navegador.");
-      }
-    }
-
-    cycleDashboards();
-    setInterval(cycleDashboards, intervalTime);
+    cycle();
+    setInterval(cycle, intervalTime);
+    setInterval(() => {
+      const frame = document.getElementById("lookerFrame");
+      frame.src = frame.src;
+    }, 600000);
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
