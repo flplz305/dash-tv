@@ -8,78 +8,62 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      width: 100%;
-      background: #000;
       overflow: hidden;
+      background-color: #000;
     }
     iframe {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       border: none;
     }
     #fullscreenBtn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
       z-index: 9999;
-      padding: 12px 22px;
-      font-size: 18px;
-      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
       border: none;
-      background: #1A73E8;
-      color: #fff;
+      border-radius: 8px;
+      background-color: #1A73E8;
+      color: white;
       cursor: pointer;
-      opacity: 0.9;
     }
   </style>
 </head>
 <body>
-  <iframe id="lookerFrame"></iframe>
-  <button id="fullscreenBtn">Tela Cheia</button>
+  <iframe id="lookerFrame" src=""></iframe>
+  <button id="fullscreenBtn" onclick="openFullscreen()">Tela Cheia</button>
   <script>
-    /* ============================
-       LISTA DE DASHBOARDS
-    ============================ */
     const dashboards = [
       "https://lookerstudio.google.com/embed/reporting/b6b28955-f492-46c1-af56-76c2b7bd0dae/page/p_g4doowqmxd",
       "https://lookerstudio.google.com/embed/reporting/22049608-7769-4771-950c-f8e0715b3813/page/qzTwE",
       "https://lookerstudio.google.com/embed/reporting/b6b28955-f492-46c1-af56-76c2b7bd0dae/page/p_5082emfywd",
     ];
-    let index = 0;
+    let currentIndex = 0;
     const intervalTime = 120000; // 2 minutos
-    /* ============================
-       CICLO DE DASHBOARDS
-    ============================ */
-    function cycle() {
-      const frame = document.getElementById("lookerFrame");
-      frame.src = dashboards[index];
-      index = (index + 1) % dashboards.length;
+    function cycleDashboards() {
+      document.getElementById("lookerFrame").src = dashboards[currentIndex];
+      currentIndex = (currentIndex + 1) % dashboards.length;
     }
-    cycle();
-    setInterval(cycle, intervalTime);
-    setInterval(() => {
-      const frame = document.getElementById("lookerFrame");
-      frame.src = frame.src;
-    }, 600000);
-    const btn = document.getElementById("fullscreenBtn");
-    btn.addEventListener("click", () => {
+    function openFullscreen() {
       const elem = document.documentElement;
-      if (elem.requestFullscreen) elem.requestFullscreen();
-      else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-      else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-      else alert("Seu navegador de TV pode não suportar tela cheia.");
-      setTimeout(() => {
-        if (document.fullscreenElement) btn.style.display = "none";
-      }, 500);
-    });
-    document.addEventListener("fullscreenchange", () => {
-      if (!document.fullscreenElement) {
-        btn.style.display = "block";
+      const button = document.getElementById("fullscreenBtn");
+      const hideButton = () => button.style.display = "none";
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().then(hideButton).catch(console.error);
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+        hideButton();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+        hideButton();
+      } else {
+        alert("Modo tela cheia não suportado neste navegador.");
       }
-    });
+    }
+    cycleDashboards();
+    setInterval(cycleDashboards, intervalTime);
   </script>
 </body>
 </html>
